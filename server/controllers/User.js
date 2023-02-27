@@ -2,6 +2,7 @@ const { request, response } = require("express");
 const { hashPassword, checkPassword } = require("../helpers/passwordHashing");
 const internalMsg = require("../helpers/internalMsg");
 const User = require("../models/User");
+const { genJWT, checkJWT } = require("../helpers/jwt");
 
 const createUser = async (req = request, res = response) => {
   const { username, password } = req.body;
@@ -71,8 +72,11 @@ const login = async (req = request, res = response) => {
       });
     }
 
+    const token = await genJWT(user.id, user.username);
+
     return res.status(200).json({
       msg: "Logged in.",
+      token,
       user: {
         id: user.id,
         username: user.username,
@@ -86,7 +90,15 @@ const login = async (req = request, res = response) => {
   }
 };
 
+const verifyToken = async (req = request, res = response) => {
+  // This function uses the "checkToken" middleware. If it passes, then the token is verified.
+  res.status(200).json({
+    msg: "Token is valid.",
+  });
+};
+
 module.exports = {
   createUser,
   login,
+  verifyToken,
 };
