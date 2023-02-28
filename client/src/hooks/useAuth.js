@@ -5,12 +5,22 @@ import usersApi from "../api/usersApi";
 export const useAuth = () => {
   const navigate = useNavigate();
 
-  const [status, setStatus] = useState("checking");
+  const [status, setStatus] = useState("checking"); // "checking" | "checked"
 
   const checkAuth = async () => {
-    // if auth not valid (send token to backend) or not setted (no token at localstorage), navigate to /login and set status to checked
-    const result = await usersApi().get("/verify");
-    console.log(result);
+    try {
+      await usersApi().get("/verify", {
+        headers: {
+          "x-token": localStorage.getItem("token"),
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      setStatus("checked");
+      return navigate("/login");
+    }
+    setStatus("checked");
+    navigate("/");
   };
 
   useEffect(() => {
