@@ -89,7 +89,7 @@ export const HomePage = () => {
       chatId: 1,
       senderId: 1,
       recieverId: 2,
-      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee!",
+      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
     },
     {
@@ -98,6 +98,46 @@ export const HomePage = () => {
       senderId: 1,
       recieverId: 3,
       msg: "Hola Mario!",
+      date: new Date(),
+    },
+    {
+      id: 7,
+      chatId: 1,
+      senderId: 1,
+      recieverId: 2,
+      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
+      date: new Date(),
+    },
+    {
+      id: 8,
+      chatId: 1,
+      senderId: 1,
+      recieverId: 2,
+      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
+      date: new Date(),
+    },
+    {
+      id: 9,
+      chatId: 1,
+      senderId: 1,
+      recieverId: 2,
+      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
+      date: new Date(),
+    },
+    {
+      id: 10,
+      chatId: 1,
+      senderId: 1,
+      recieverId: 2,
+      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
+      date: new Date(),
+    },
+    {
+      id: 11,
+      chatId: 1,
+      senderId: 1,
+      recieverId: 2,
+      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
     },
   ];
@@ -130,8 +170,27 @@ export const HomePage = () => {
 
   const transformDate = (date) => {
     let dd = date.getDate();
-    let mm = date.getMonth() + 1; // Months start at 0!
+    let mm = date.getMonth() + 1;
     return `${dd}/${mm}`;
+  };
+
+  const getCompleteDate = (date) => {
+    let dd = String(date.getDate()).padStart(2, "0");
+    let mm = String(date.getMonth() + 1).padStart(2, "0");
+    let yyyy = date.getFullYear();
+    let hh = String(date.getHours()).padStart(2, "0");
+    let min = String(date.getMinutes()).padStart(2, "0");
+    return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
+  };
+
+  const [sendMsgInput, setSendMsgInput] = useState("");
+  const onSendMsgInputChange = (e) => {
+    setSendMsgInput(e.target.value);
+  };
+
+  const onSendMsgEvent = (e) => {
+    e.preventDefault();
+    console.log(sendMsgInput);
   };
 
   return (
@@ -156,7 +215,11 @@ export const HomePage = () => {
               return (
                 <div
                   className={`chat-item ${
-                    selectedChat.id === chat.id ? "active-chat" : ""
+                    selectedChat
+                      ? selectedChat.id === chat.id
+                        ? "active-chat"
+                        : ""
+                      : ""
                   }`}
                   key={chat.id}
                   onClick={() => onSelectChat(chat)}
@@ -193,6 +256,32 @@ export const HomePage = () => {
                 : getUserById(selectedChat.user1Id).username}
             </h1>
             {/* TODO: CHAT! */}
+            <div className="chat">
+              {chatMessagesList.map((message) => (
+                <div
+                  key={message.id}
+                  className={`msg-container ${
+                    message.senderId === user.id ? "sent" : "received"
+                  }`}
+                >
+                  <div className="date-row">
+                    {getCompleteDate(message.date)}
+                  </div>
+                  <div className="msg-row">{message.msg}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="send-msg-input">
+              <form onSubmit={onSendMsgEvent}>
+                <input
+                  type="text"
+                  placeholder="Message"
+                  value={sendMsgInput}
+                  onChange={onSendMsgInputChange}
+                />
+              </form>
+            </div>
           </>
         )}
       </div>

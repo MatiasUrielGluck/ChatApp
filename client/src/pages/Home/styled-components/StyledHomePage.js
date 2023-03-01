@@ -43,12 +43,12 @@ export const StyledHomePage = styled.div`
         transition: all 0.3s ease;
 
         &.active-chat {
-          background: #f4f4f4;
+          background: #ececec;
           box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         }
 
         &:hover {
-          background: #f4f4f4;
+          background: #ececec;
           box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         }
 
@@ -77,9 +77,59 @@ export const StyledHomePage = styled.div`
   }
 
   .right-container {
+    position: relative;
     width: 100%;
-    background: #f4f4f4;
+    background: #ececec;
     padding: 24px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+    .chat {
+      display: grid;
+      height: 88%;
+      overflow: auto;
+
+      .msg-container {
+        padding: 12px;
+        margin-bottom: 12px;
+        max-width: 600px;
+        width: fit-content;
+        height: fit-content;
+        margin-right: 0;
+
+        &.sent {
+          background: rgba(0, 98, 255, 0.3);
+          /* Make this element to the right of the chat */
+
+          justify-self: right;
+        }
+
+        &.received {
+          background: #ffffff;
+        }
+      }
+    }
+
+    .send-msg-input {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+
+      input {
+        width: calc(100% - 48px);
+        position: absolute;
+        bottom: 12px;
+        left: 24px;
+        padding: 14px;
+        border-radius: 3px;
+        border: 1px solid gray;
+        transition: all 0.3s ease;
+
+        &:focus {
+          outline: none;
+          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        }
+      }
+    }
   }
 `;
