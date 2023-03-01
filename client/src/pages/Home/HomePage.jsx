@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { StyledHomePage } from "./styled-components";
 
@@ -204,6 +204,17 @@ export const HomePage = () => {
     console.log(sendMsgInput);
   };
 
+  const scrollToBottom = () => {
+    const element = document.getElementById("bottom");
+    if (element) {
+      element.scrollIntoView();
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [selectedChat]);
+
   return (
     <StyledHomePage>
       <div className="left-container">
@@ -290,6 +301,7 @@ export const HomePage = () => {
                   <div className="msg-row">{message.msg}</div>
                 </div>
               ))}
+              <div className="div" id="bottom"></div>
             </div>
 
             <div className="send-msg-input">
