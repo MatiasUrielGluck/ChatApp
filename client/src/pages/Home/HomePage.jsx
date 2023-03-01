@@ -59,6 +59,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "Hola debi",
       date: new Date(),
+      seen: true,
     },
     {
       id: 2,
@@ -67,6 +68,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "cómo estás?",
       date: new Date(),
+      seen: true,
     },
     {
       id: 3,
@@ -75,6 +77,7 @@ export const HomePage = () => {
       recieverId: 1,
       msg: "Hola mati",
       date: new Date(),
+      seen: true,
     },
     {
       id: 4,
@@ -83,6 +86,7 @@ export const HomePage = () => {
       recieverId: 1,
       msg: "Hola mati, todo bien! Vos cómo estás?",
       date: new Date(),
+      seen: true,
     },
     {
       id: 5,
@@ -91,6 +95,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
+      seen: true,
     },
     {
       id: 6,
@@ -99,6 +104,7 @@ export const HomePage = () => {
       recieverId: 3,
       msg: "Hola Mario!",
       date: new Date(),
+      seen: true,
     },
     {
       id: 7,
@@ -107,6 +113,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
+      seen: true,
     },
     {
       id: 8,
@@ -115,6 +122,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
+      seen: true,
     },
     {
       id: 9,
@@ -123,6 +131,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
+      seen: true,
     },
     {
       id: 10,
@@ -131,6 +140,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
+      seen: true,
     },
     {
       id: 11,
@@ -139,6 +149,7 @@ export const HomePage = () => {
       recieverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
+      seen: false,
     },
   ];
   ///////////////////////////////////////////////////////////////////////
@@ -265,7 +276,16 @@ export const HomePage = () => {
                   }`}
                 >
                   <div className="date-row">
-                    {getCompleteDate(message.date)}
+                    <p>{getCompleteDate(message.date)}</p>
+                    {message.senderId === user.id ? (
+                      message.seen ? (
+                        <i className="fa-solid fa-eye"></i>
+                      ) : (
+                        <i className="fa-regular fa-circle-check"></i>
+                      )
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className="msg-row">{message.msg}</div>
                 </div>

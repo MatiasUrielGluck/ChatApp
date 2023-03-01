@@ -96,6 +96,23 @@ export const StyledHomePage = styled.div`
         height: fit-content;
         margin-right: 0;
 
+
+        .date-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .date-row > p {
+          font-size: 14px;
+          opacity: 90%;
+        }
+
+        .date-row > i {
+          transform: translateY(-2px);
+        }
+
         &.sent {
           background: rgba(0, 98, 255, 0.3);
           /* Make this element to the right of the chat */
