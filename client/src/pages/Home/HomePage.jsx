@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { StyledHomePage } from "./styled-components";
 import "../../socket/socket";
 import { sendMsg } from "../../socket/socket";
+import usersApi from "../../api/usersApi";
 
 export const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -28,21 +29,24 @@ export const HomePage = () => {
 
   const [chatMessagesList, setChatMessagesList] = useState([]);
 
+  const [userList, setUserList] = useState([]);
+
+  const getUserList = async () => {
+    const result = await usersApi().get("/", {
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    });
+
+    setUserList(result.data.userList);
+  };
+
+  // REAL DATA
+  useEffect(() => {
+    getUserList();
+  }, []);
+
   // TEMP DATA!!! TODO: REPLACE THIS DATA WITH REAL DATA FROM DATABASE
-  const userList = [
-    {
-      id: 1,
-      username: "Matias",
-    },
-    {
-      id: 2,
-      username: "Debora",
-    },
-    {
-      id: 3,
-      username: "Mario",
-    },
-  ];
 
   const chatList = [
     {
@@ -247,6 +251,10 @@ export const HomePage = () => {
   useEffect(() => {
     scrollToBottom();
   }, [selectedChat]);
+
+  if (!userList.length) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <StyledHomePage>

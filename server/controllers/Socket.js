@@ -3,7 +3,6 @@ const Message = require("../models/Message");
 
 const onSendMsg = async (client, data) => {
   const { token, message } = data;
-  console.log(message.receiverId);
 
   // START OF SECURITY CHECKS
   if (!token) {

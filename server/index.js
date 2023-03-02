@@ -11,7 +11,9 @@ const socket = require("./socket");
 const cors = require("cors");
 const PORT = process.env.PORT || 3000;
 const sequelize = require("./services/database");
+
 const usersRouter = require("./routes/User");
+const chatsRouter = require("./routes/Chat");
 
 // Middlewares
 app.use(cors());
@@ -20,9 +22,11 @@ app.use(express.json());
 // Routes
 const apiRoutes = {
   users: "/api/users",
+  chats: "/api/chats",
 };
 
 app.use(apiRoutes.users, usersRouter);
+app.use(apiRoutes.chats, chatsRouter);
 ////////////////////////////////////////////
 
 socket(io);

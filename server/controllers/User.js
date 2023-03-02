@@ -97,8 +97,27 @@ const verifyToken = async (req = request, res = response) => {
   });
 };
 
+const getUsers = async (req = request, res = response) => {
+  try {
+    const userList = await User.findAll({
+      attributes: ["id", "username"],
+    });
+
+    return res.status(200).json({
+      msg: "OK",
+      userList,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: internalMsg.internalError,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   login,
   verifyToken,
+  getUsers,
 };
