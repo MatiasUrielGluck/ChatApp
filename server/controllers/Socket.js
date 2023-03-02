@@ -1,7 +1,9 @@
 const { checkJWT } = require("../helpers/jwt");
+const Message = require("../models/Message");
 
-const onSendMsg = (client, data) => {
+const onSendMsg = async (client, data) => {
   const { token, message } = data;
+  console.log(message.receiverId);
 
   // START OF SECURITY CHECKS
   if (!token) {
@@ -27,10 +29,19 @@ const onSendMsg = (client, data) => {
     // END OF SECURITY CHECKS
     //
 
-    console.log(tokenResult, data);
+    // Save the message to the database
+    const saveResult = await Message.create({
+      chatId: message.chatId,
+      senderId: message.senderId,
+      receiverId: message.receiverId,
+      msg: message.msg,
+      date: message.date,
+      status: "none", // default value is none
+    });
+
     return {
       result: "ok",
-      message,
+      newMessage: saveResult.dataValues,
     };
   } catch (error) {
     console.log(error);
