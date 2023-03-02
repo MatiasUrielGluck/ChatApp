@@ -201,13 +201,36 @@ export const HomePage = () => {
 
   const onSendMsgEvent = (e) => {
     e.preventDefault();
-    console.log(sendMsgInput);
+    const newMessageList = [];
+    for (const msg of chatMessagesList) {
+      newMessageList.push(msg);
+    }
+
+    const newMessage = {
+      id: messageList.length,
+      chatId: selectedChat.id,
+      senderId: user.id,
+      recieverId:
+        selectedChat.user1Id === user.id
+          ? selectedChat.user2Id
+          : selectedChat.user1Id,
+      msg: sendMsgInput,
+      date: new Date(),
+      seen: false,
+    };
+
+    newMessageList.push(newMessage);
+    messageList.push(newMessage);
+
+    setChatMessagesList(newMessageList);
+    setSendMsgInput("");
+    scrollToBottom(true);
   };
 
-  const scrollToBottom = () => {
+  const scrollToBottom = (activateEffect = false) => {
     const element = document.getElementById("bottom");
     if (element) {
-      element.scrollIntoView();
+      element.scrollIntoView({ behavior: activateEffect ? "smooth" : "auto" });
     }
   };
 
