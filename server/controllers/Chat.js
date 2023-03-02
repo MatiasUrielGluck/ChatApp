@@ -1,4 +1,5 @@
 const { request, response } = require("express");
+const { Op } = require("sequelize");
 const internalMsg = require("../helpers/internalMsg");
 const User = require("../models/User");
 const Chat = require("../models/Chat");
@@ -54,6 +55,30 @@ const createChat = async (req = request, res = response) => {
   }
 };
 
+const getChatListForUser = async (req = request, res = response) => {
+  try {
+    const chatList = await Chat.findAll({
+      where: {
+        [Op.or]: [
+          { user1Id: req.decodedToken.data.id },
+          { user2Id: req.decodedToken.data.id },
+        ],
+      },
+    });
+
+    res.status(200).json({
+      msg: "OK",
+      chatList,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      msg: internalMsg.internalError,
+    });
+  }
+};
+
 module.exports = {
   createChat,
+  getChatListForUser,
 };
