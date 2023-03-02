@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { StyledHomePage } from "./styled-components";
+import "../../socket/socket";
+import { sendMsg } from "../../socket/socket";
 
 export const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -18,6 +20,10 @@ export const HomePage = () => {
   const onSelectChat = (chat) => {
     setSelectedChat(chat);
     getMessagesByChatId(chat.id);
+    setSendMsgInput("");
+    if (document.getElementById("sendMsgInput")) {
+      document.getElementById("sendMsgInput").focus();
+    }
   };
 
   const [chatMessagesList, setChatMessagesList] = useState([]);
@@ -199,6 +205,10 @@ export const HomePage = () => {
     setSendMsgInput(e.target.value);
   };
 
+  useEffect(() => {
+    scrollToBottom(true);
+  }, [chatMessagesList]);
+
   const onSendMsgEvent = (e) => {
     e.preventDefault();
     const newMessageList = [];
@@ -224,7 +234,7 @@ export const HomePage = () => {
 
     setChatMessagesList(newMessageList);
     setSendMsgInput("");
-    scrollToBottom(true);
+    sendMsg(newMessage);
   };
 
   const scrollToBottom = (activateEffect = false) => {
@@ -330,6 +340,7 @@ export const HomePage = () => {
             <div className="send-msg-input">
               <form onSubmit={onSendMsgEvent}>
                 <input
+                  id="sendMsgInput"
                   type="text"
                   placeholder="Message"
                   value={sendMsgInput}
