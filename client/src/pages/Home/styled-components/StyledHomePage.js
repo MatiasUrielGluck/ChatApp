@@ -33,6 +33,29 @@ export const StyledHomePage = styled.div`
       }
     }
 
+    .filtered-users-container {
+      position: absolute;
+      left: 12px;
+      max-height: 600px;
+      background: #ececec;
+      width: 276px;
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+      .filtered-user {
+        padding: 16px;
+        border-bottom: 1px solid #bdc3c7;
+        transition: all 0.3s ease;
+
+        &:last-of-type {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background: #d2d6d9;
+        }
+      }
+    }
+
     .chat-list {
       display: flex;
       flex-flow: column nowrap;
@@ -95,7 +118,6 @@ export const StyledHomePage = styled.div`
         width: fit-content;
         height: fit-content;
         margin-right: 0;
-
 
         .date-row {
           display: flex;

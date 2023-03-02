@@ -2,13 +2,9 @@ import io from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_BACKEND_URL);
 
-socket.on("connect", () => {
-  console.log("Conected");
-});
+socket.on("connect", () => {});
 
-socket.on("disconnect", () => {
-  console.log("Disonected");
-});
+socket.on("disconnect", () => {});
 
 export const sendMsg = (message) => {
   const payload = {

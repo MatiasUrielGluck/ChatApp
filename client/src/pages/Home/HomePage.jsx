@@ -8,28 +8,9 @@ import usersApi from "../../api/usersApi";
 export const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
 
-  const [searchInput, setSearchInput] = useState("");
-  const onSearchInputChange = (e) => {
-    setSearchInput(e.target.value);
-  };
-  const onUserSearch = (e) => {
-    e.preventDefault();
-    console.log(searchInput);
-  };
-
-  const [selectedChat, setSelectedChat] = useState(null);
-  const onSelectChat = (chat) => {
-    setSelectedChat(chat);
-    getMessagesByChatId(chat.id);
-    setSendMsgInput("");
-    if (document.getElementById("sendMsgInput")) {
-      document.getElementById("sendMsgInput").focus();
-    }
-  };
-
-  const [chatMessagesList, setChatMessagesList] = useState([]);
-
   const [userList, setUserList] = useState([]);
+  const [filteredUserList, setFilteredUserList] = useState([]);
+  const [filteredSelectedUser, FilteredSelectedUser] = useState(null);
 
   const getUserList = async () => {
     const result = await usersApi().get("/", {
@@ -41,10 +22,68 @@ export const HomePage = () => {
     setUserList(result.data.userList);
   };
 
-  // REAL DATA
   useEffect(() => {
     getUserList();
   }, []);
+
+  const [searchInput, setSearchInput] = useState("");
+  const onSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const initFilteredUserList = () => {
+    setFilteredUserList(
+      userList.filter((user) => {
+        return user;
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (userList.length) {
+      setFilteredUserList(
+        userList.filter((user) => {
+          return user.username.toLowerCase().includes(searchInput);
+        })
+      );
+    }
+  }, [searchInput]);
+
+  const selectFilteredUser = (clickedUser) => {
+    
+
+    // Si no existe el chat correspondiente al usuario seleccionado con el usuario logueado, crear un chat temporal
+    setSelectedChat({
+      id: 912304789,
+      user1Id: user.id,
+      user2Id: clickedUser.id,
+    });
+
+    setFilteredUserList([]);
+  };
+
+  const onUserSearch = (e) => {
+    e.preventDefault();
+    console.log(searchInput);
+  };
+
+  const closeFilter = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    setFilteredUserList([]);
+  };
+
+  const [selectedChat, setSelectedChat] = useState(null);
+
+  const onSelectChat = (chat) => {
+    setSelectedChat(chat);
+    getMessagesByChatId(chat.id);
+    setSendMsgInput("");
+    if (document.getElementById("sendMsgInput")) {
+      document.getElementById("sendMsgInput").focus();
+    }
+  };
+
+  const [chatMessagesList, setChatMessagesList] = useState([]);
 
   // TEMP DATA!!! TODO: REPLACE THIS DATA WITH REAL DATA FROM DATABASE
 
@@ -268,8 +307,23 @@ export const HomePage = () => {
               placeholder="Search"
               value={searchInput}
               onChange={onSearchInputChange}
+              onClick={initFilteredUserList}
+              onBlur={closeFilter}
             />
           </form>
+          <div className="filtered-users-container">
+            {filteredUserList.map((user) => (
+              <div
+                className="filtered-user"
+                key={user.id}
+                onClick={() => {
+                  selectFilteredUser(user);
+                }}
+              >
+                <p>{user.username}</p>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="chat-list">
           {/* TODO: List of chats the user has interacted with */}
