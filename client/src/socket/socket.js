@@ -15,5 +15,7 @@ export const sendMsg = (message) => {
     token: localStorage.getItem("token"),
     message,
   };
-  socket.emit("send-msg", payload);
+  socket.emit("send-msg", payload, () => {
+    console.log("CALLBACK!");
+  });
 };

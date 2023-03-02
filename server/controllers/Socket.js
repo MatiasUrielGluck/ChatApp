@@ -1,24 +1,37 @@
 const { checkJWT } = require("../helpers/jwt");
 
 const onSendMsg = (client, data) => {
-  const { token } = data;
+  const { token, message } = data;
 
+  // START OF SECURITY CHECKS
   if (!token) {
-    // TODO:return error
     client.disconnect();
-    return;
+    return {
+      result: "error",
+    };
   }
 
   try {
     const tokenResult = checkJWT(token);
     if (tokenResult.status === "error") {
-      // TODO:return error
       client.disconnect();
-      return;
+      return {
+        result: "error",
+      };
     }
 
-    // TODO: check that the user id of the decoded token equals the sender id of the data
+    if (tokenResult.data.id !== message.senderId)
+      return {
+        result: "error",
+      };
+    // END OF SECURITY CHECKS
+    //
+
     console.log(tokenResult, data);
+    return {
+      result: "ok",
+      message,
+    };
   } catch (error) {
     console.log(error);
     return;
