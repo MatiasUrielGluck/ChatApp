@@ -14,6 +14,7 @@ const sequelize = require("./services/database");
 
 const usersRouter = require("./routes/User");
 const chatsRouter = require("./routes/Chat");
+const messagesRouter = require("./routes/Message");
 
 // Middlewares
 app.use(cors());
@@ -23,10 +24,12 @@ app.use(express.json());
 const apiRoutes = {
   users: "/api/users",
   chats: "/api/chats",
+  messages: "/api/messages",
 };
 
 app.use(apiRoutes.users, usersRouter);
 app.use(apiRoutes.chats, chatsRouter);
+app.use(apiRoutes.messages, messagesRouter);
 ////////////////////////////////////////////
 
 socket(io);
