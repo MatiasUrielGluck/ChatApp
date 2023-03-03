@@ -38,6 +38,8 @@ const onSendMsg = async (client, data) => {
       status: "sent", // default value is sent
     });
 
+    client.emit("send-msg", saveResult.dataValues);
+
     return {
       result: "ok",
       newMessage: saveResult.dataValues,
