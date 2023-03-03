@@ -4,6 +4,7 @@ import { StyledHomePage } from "./styled-components";
 import "../../socket/socket";
 import { sendMsg } from "../../socket/socket";
 import usersApi from "../../api/usersApi";
+import chatsApi from "../../api/chatsApi";
 
 export const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -11,6 +12,8 @@ export const HomePage = () => {
   const [userList, setUserList] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
   const [filteredSelectedUser, FilteredSelectedUser] = useState(null);
+
+  const [chatList, setChatList] = useState([]);
 
   const getUserList = async () => {
     const result = await usersApi().get("/", {
@@ -22,8 +25,19 @@ export const HomePage = () => {
     setUserList(result.data.userList);
   };
 
+  const getChatList = async () => {
+    const result = await chatsApi().get("/", {
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    });
+
+    setChatList(result.data.chatList);
+  };
+
   useEffect(() => {
     getUserList();
+    getChatList();
   }, []);
 
   const [searchInput, setSearchInput] = useState("");
@@ -33,8 +47,8 @@ export const HomePage = () => {
 
   const initFilteredUserList = () => {
     setFilteredUserList(
-      userList.filter((user) => {
-        return user;
+      userList.filter((local_user) => {
+        return local_user.id !== user.id;
       })
     );
   };
@@ -50,14 +64,41 @@ export const HomePage = () => {
   }, [searchInput]);
 
   const selectFilteredUser = (clickedUser) => {
-    
-
-    // Si no existe el chat correspondiente al usuario seleccionado con el usuario logueado, crear un chat temporal
-    setSelectedChat({
-      id: 912304789,
-      user1Id: user.id,
-      user2Id: clickedUser.id,
+    // RF021: Si no existe el chat correspondiente al usuario seleccionado con el usuario logueado, el sistema debe crear un chat temporal
+    let chatToBeSelected;
+    const chatToBeSelectedListed = chatList.filter((chat) => {
+      if (
+        (chat.user1Id === user.id || chat.user2Id === user.id) &&
+        (chat.user1Id === clickedUser.id || chat.user2Id === clickedUser.id)
+      ) {
+        return chat;
+      }
     });
+
+    if (!chatToBeSelectedListed.length) {
+      chatToBeSelected = {
+        id: 912304789514243151785134235163453461728098198379825646536451928374610610598,
+        user1Id: user.id,
+        user2Id: clickedUser.id,
+      };
+    } else {
+      chatToBeSelected = chatToBeSelectedListed[0];
+      return onSelectChat(chatToBeSelected);
+    }
+
+    let newChatList = [chatToBeSelected];
+    for (const chat of chatList) {
+      if (
+        chat.id ===
+        912304789514243151785134235163453461728098198379825646536451928374610610598
+      ) {
+        continue;
+      }
+      newChatList.push(chat);
+    }
+
+    setChatList(newChatList);
+    setSelectedChat(chatToBeSelected);
 
     setFilteredUserList([]);
   };
@@ -75,6 +116,13 @@ export const HomePage = () => {
   const [selectedChat, setSelectedChat] = useState(null);
 
   const onSelectChat = (chat) => {
+    setChatList(
+      chatList.filter(
+        (chat) =>
+          chat.id !==
+          912304789514243151785134235163453461728098198379825646536451928374610610598
+      )
+    );
     setSelectedChat(chat);
     getMessagesByChatId(chat.id);
     setSendMsgInput("");
@@ -87,6 +135,7 @@ export const HomePage = () => {
 
   // TEMP DATA!!! TODO: REPLACE THIS DATA WITH REAL DATA FROM DATABASE
 
+  /*
   const chatList = [
     {
       id: 1,
@@ -99,6 +148,7 @@ export const HomePage = () => {
       user2Id: 3,
     },
   ];
+  */
 
   const messageList = [
     {
@@ -252,8 +302,39 @@ export const HomePage = () => {
     scrollToBottom(true);
   }, [chatMessagesList]);
 
-  const onSendMsgEvent = (e) => {
+  const onSendMsgEvent = async (e) => {
     e.preventDefault();
+
+    if (
+      selectedChat.id ===
+      912304789514243151785134235163453461728098198379825646536451928374610610598
+    ) {
+      // This chat is temporal and empty, save it to the database
+      const body = {
+        user1Id: selectedChat.user1Id,
+        user2Id: selectedChat.user2Id,
+      };
+      const result = await chatsApi().post("/", body, {
+        headers: {
+          "x-token": localStorage.getItem("token"),
+        },
+      });
+
+      const chatId = result.data.chatId;
+      let newChatList = [];
+      for (const chat of chatList) {
+        if (
+          chat.id ===
+          912304789514243151785134235163453461728098198379825646536451928374610610598
+        ) {
+          chat.id = chatId;
+        }
+
+        newChatList.push(chat);
+      }
+      setChatList(newChatList);
+    }
+
     const newMessageList = [];
     for (const msg of chatMessagesList) {
       newMessageList.push(msg);
@@ -348,11 +429,15 @@ export const HomePage = () => {
                         : getUserById(chat.user1Id).username}
                     </p>
                     <p className="chat-item__date">
-                      {transformDate(getLastMessageByChatId(chat.id).date)}
+                      {getLastMessageByChatId(chat.id)
+                        ? transformDate(getLastMessageByChatId(chat.id).date)
+                        : "--/--"}
                     </p>
                   </div>
                   <p className="chat-item__last-msg">
-                    {getLastMessageByChatId(chat.id).msg}
+                    {getLastMessageByChatId(chat.id)
+                      ? transformDate(getLastMessageByChatId(chat.id).date)
+                      : "-"}
                   </p>
                 </div>
               );

@@ -39,13 +39,14 @@ const createChat = async (req = request, res = response) => {
       });
     }
 
-    await Chat.create({
+    const newChat = await Chat.create({
       user1Id,
       user2Id,
     });
 
     return res.status(201).json({
       msg: "Chat created.",
+      chatId: newChat.id,
     });
   } catch (error) {
     console.log(error);
