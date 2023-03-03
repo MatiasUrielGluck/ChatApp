@@ -5,6 +5,7 @@ import "../../socket/socket";
 import { sendMsg } from "../../socket/socket";
 import usersApi from "../../api/usersApi";
 import chatsApi from "../../api/chatsApi";
+import messagesApi from "../../api/messagesApi";
 
 export const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -14,6 +15,9 @@ export const HomePage = () => {
   const [filteredSelectedUser, FilteredSelectedUser] = useState(null);
 
   const [chatList, setChatList] = useState([]);
+  const [chatMessagesList, setChatMessagesList] = useState([]);
+
+  const [messageList, setMessageList] = useState([]);
 
   const getUserList = async () => {
     const result = await usersApi().get("/", {
@@ -35,10 +39,32 @@ export const HomePage = () => {
     setChatList(result.data.chatList);
   };
 
+  const getMessageList = async () => {
+    const result = await messagesApi().get("/", {
+      headers: {
+        "x-token": localStorage.getItem("token"),
+      },
+    });
+
+    setMessageList(result.data.messageList);
+  };
+
   useEffect(() => {
     getUserList();
+    getMessageList();
     getChatList();
   }, []);
+
+  const compareChatFnByDate = (chatA, chatB) => {
+    if (
+      new Date(getLastMessageByChatId(chatA.id).date).getTime() >
+      new Date(getLastMessageByChatId(chatB.id).date).getTime()
+    ) {
+      return -1;
+    } else {
+      return 1;
+    }
+  };
 
   const [searchInput, setSearchInput] = useState("");
   const onSearchInputChange = (e) => {
@@ -98,7 +124,13 @@ export const HomePage = () => {
     }
 
     setChatList(newChatList);
+
     setSelectedChat(chatToBeSelected);
+    getMessagesByChatId(chatToBeSelected.id);
+    setSendMsgInput("");
+    if (document.getElementById("sendMsgInput")) {
+      document.getElementById("sendMsgInput").focus();
+    }
 
     setFilteredUserList([]);
   };
@@ -123,6 +155,7 @@ export const HomePage = () => {
           912304789514243151785134235163453461728098198379825646536451928374610610598
       )
     );
+
     setSelectedChat(chat);
     getMessagesByChatId(chat.id);
     setSendMsgInput("");
@@ -130,8 +163,6 @@ export const HomePage = () => {
       document.getElementById("sendMsgInput").focus();
     }
   };
-
-  const [chatMessagesList, setChatMessagesList] = useState([]);
 
   // TEMP DATA!!! TODO: REPLACE THIS DATA WITH REAL DATA FROM DATABASE
 
@@ -150,6 +181,7 @@ export const HomePage = () => {
   ];
   */
 
+  /*
   const messageList = [
     {
       id: 1,
@@ -252,6 +284,7 @@ export const HomePage = () => {
     },
   ];
   ///////////////////////////////////////////////////////////////////////
+  */
 
   const getUserById = (id) => {
     return userList.filter((user) => user.id === id)[0];
@@ -279,12 +312,14 @@ export const HomePage = () => {
   };
 
   const transformDate = (date) => {
+    date = new Date(date);
     let dd = date.getDate();
     let mm = date.getMonth() + 1;
     return `${dd}/${mm}`;
   };
 
   const getCompleteDate = (date) => {
+    date = new Date(date);
     let dd = String(date.getDate()).padStart(2, "0");
     let mm = String(date.getMonth() + 1).padStart(2, "0");
     let yyyy = date.getFullYear();
@@ -350,15 +385,23 @@ export const HomePage = () => {
           : selectedChat.user1Id,
       msg: sendMsgInput,
       date: new Date(),
-      seen: false,
+      status: "none",
     };
 
-    newMessageList.push(newMessage);
-    messageList.push(newMessage);
+    const newMessageServerSide = await sendMsg(newMessage);
+
+    newMessageList.push(newMessageServerSide);
 
     setChatMessagesList(newMessageList);
+
+    const newGlobalMessageList = [];
+    for (const msg of messageList) {
+      newGlobalMessageList.push(msg);
+    }
+    newGlobalMessageList.push(newMessageServerSide);
+    setMessageList(newGlobalMessageList);
+
     setSendMsgInput("");
-    sendMsg(newMessage);
   };
 
   const scrollToBottom = (activateEffect = false) => {
@@ -408,41 +451,43 @@ export const HomePage = () => {
         </div>
         <div className="chat-list">
           {/* TODO: List of chats the user has interacted with */}
-          {chatList.map((chat) => {
-            if (chat.user1Id === user.id || chat.user2Id === user.id) {
-              return (
-                <div
-                  className={`chat-item ${
-                    selectedChat
-                      ? selectedChat.id === chat.id
-                        ? "active-chat"
+          {chatList
+            .sort((chatA, chatB) => compareChatFnByDate(chatA, chatB))
+            .map((chat) => {
+              if (chat.user1Id === user.id || chat.user2Id === user.id) {
+                return (
+                  <div
+                    className={`chat-item ${
+                      selectedChat
+                        ? selectedChat.id === chat.id
+                          ? "active-chat"
+                          : ""
                         : ""
-                      : ""
-                  }`}
-                  key={chat.id}
-                  onClick={() => onSelectChat(chat)}
-                >
-                  <div className="top-row">
-                    <p className="chat-item__username">
-                      {chat.user1Id === user.id
-                        ? getUserById(chat.user2Id).username
-                        : getUserById(chat.user1Id).username}
-                    </p>
-                    <p className="chat-item__date">
+                    }`}
+                    key={chat.id}
+                    onClick={() => onSelectChat(chat)}
+                  >
+                    <div className="top-row">
+                      <p className="chat-item__username">
+                        {chat.user1Id === user.id
+                          ? getUserById(chat.user2Id).username
+                          : getUserById(chat.user1Id).username}
+                      </p>
+                      <p className="chat-item__date">
+                        {getLastMessageByChatId(chat.id)
+                          ? transformDate(getLastMessageByChatId(chat.id).date)
+                          : "--/--"}
+                      </p>
+                    </div>
+                    <p className="chat-item__last-msg">
                       {getLastMessageByChatId(chat.id)
-                        ? transformDate(getLastMessageByChatId(chat.id).date)
-                        : "--/--"}
+                        ? getLastMessageByChatId(chat.id).msg
+                        : "-"}
                     </p>
                   </div>
-                  <p className="chat-item__last-msg">
-                    {getLastMessageByChatId(chat.id)
-                      ? transformDate(getLastMessageByChatId(chat.id).date)
-                      : "-"}
-                  </p>
-                </div>
-              );
-            }
-          })}
+                );
+              }
+            })}
         </div>
       </div>
 

@@ -35,7 +35,7 @@ const onSendMsg = async (client, data) => {
       receiverId: message.receiverId,
       msg: message.msg,
       date: message.date,
-      status: "none", // default value is none
+      status: "sent", // default value is sent
     });
 
     return {
