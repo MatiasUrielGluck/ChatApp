@@ -1,7 +1,7 @@
-const { checkJWT } = require("../helpers/jwt");
-const Message = require("../models/Message");
+const { checkJWT } = require("../../helpers/jwt");
+const Message = require("../../models/Message");
 
-const onSendMsg = async (io, client, data) => {
+const onSendMsg = async (io, client, data, connectedUsers) => {
   const { token, message } = data;
 
   // START OF SECURITY CHECKS
@@ -39,6 +39,13 @@ const onSendMsg = async (io, client, data) => {
     });
 
     client.emit("send-msg", saveResult.dataValues);
+    const receiverSocket = connectedUsers.getUserByDatabaseId(
+      message.receiverId
+    ).socketId;
+
+    io.to(receiverSocket).emit("new-msg", {
+      newMessage: saveResult.dataValues,
+    });
 
     return {
       result: "ok",
@@ -50,6 +57,25 @@ const onSendMsg = async (io, client, data) => {
   }
 };
 
+const onConnectUser = async (io, client, data, connectedUsers) => {
+  const { token } = data;
+
+  if (!token) {
+    return;
+  }
+
+  const result = checkJWT(token);
+
+  if (result.status === "error") {
+    return;
+  }
+
+  const decodedToken = result.data;
+  const userId = decodedToken.id;
+  connectedUsers.connectUser({ databaseId: userId, socketId: client.id });
+};
+
 module.exports = {
   onSendMsg,
+  onConnectUser,
 };

@@ -7,7 +7,7 @@ const io = require("socket.io")(server, {
     origin: process.env.FRONTEND_ORIGIN,
   },
 });
-const socket = require("./socket");
+const socket = require("./sockets/socket");
 const cors = require("cors");
 const PORT = process.env.PORT || 3000;
 const sequelize = require("./services/database");
@@ -15,6 +15,7 @@ const sequelize = require("./services/database");
 const usersRouter = require("./routes/User");
 const chatsRouter = require("./routes/Chat");
 const messagesRouter = require("./routes/Message");
+const { ConnectedUsers } = require("./sockets/models/ConnectedUsers");
 
 // Middlewares
 app.use(cors());
@@ -32,7 +33,8 @@ app.use(apiRoutes.chats, chatsRouter);
 app.use(apiRoutes.messages, messagesRouter);
 ////////////////////////////////////////////
 
-socket(io);
+const connectedUsers = new ConnectedUsers();
+socket(io, connectedUsers);
 
 server.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);

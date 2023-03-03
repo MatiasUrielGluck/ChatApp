@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { StyledHomePage } from "./styled-components";
 import "../../socket/socket";
-import { sendMsg } from "../../socket/socket";
+import { connectUser, sendMsg } from "../../socket/socket";
 import usersApi from "../../api/usersApi";
 import chatsApi from "../../api/chatsApi";
 import messagesApi from "../../api/messagesApi";
+import { useSocket } from "../../hooks/useSocket";
 
 export const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
+
+  const { newMessage } = useSocket();
+
+  useEffect(() => {
+    connectUser();
+  }, []);
 
   const [userList, setUserList] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
@@ -18,6 +25,26 @@ export const HomePage = () => {
   const [chatMessagesList, setChatMessagesList] = useState([]);
 
   const [messageList, setMessageList] = useState([]);
+
+  const addMessageFromServer = () => {
+    const newMessageList = [];
+    for (const msg of messageList) {
+      newMessageList.push(msg);
+    }
+    newMessageList.push(newMessage);
+    setMessageList(newMessageList);
+
+    const newChatMessageList = [];
+    for (const msg of chatMessagesList) {
+      newChatMessageList.push(msg);
+    }
+    newChatMessageList.push(newMessage);
+    setChatMessagesList(newChatMessageList);
+  };
+
+  useEffect(() => {
+    addMessageFromServer();
+  }, [newMessage]);
 
   const getUserList = async () => {
     const result = await usersApi().get("/", {
