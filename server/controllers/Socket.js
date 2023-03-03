@@ -1,7 +1,7 @@
 const { checkJWT } = require("../helpers/jwt");
 const Message = require("../models/Message");
 
-const onSendMsg = async (client, data) => {
+const onSendMsg = async (io, client, data) => {
   const { token, message } = data;
 
   // START OF SECURITY CHECKS
