@@ -158,7 +158,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "Hola debi",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 2,
@@ -167,7 +167,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "cómo estás?",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 3,
@@ -176,7 +176,7 @@ export const HomePage = () => {
       receiverId: 1,
       msg: "Hola mati",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 4,
@@ -185,7 +185,7 @@ export const HomePage = () => {
       receiverId: 1,
       msg: "Hola mati, todo bien! Vos cómo estás?",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 5,
@@ -194,7 +194,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 6,
@@ -203,7 +203,7 @@ export const HomePage = () => {
       receiverId: 3,
       msg: "Hola Mario!",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 7,
@@ -212,7 +212,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 8,
@@ -221,7 +221,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 9,
@@ -230,7 +230,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
-      seen: true,
+      status: "seen",
     },
     {
       id: 10,
@@ -239,7 +239,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
-      seen: true,
+      status: "sent",
     },
     {
       id: 11,
@@ -248,7 +248,7 @@ export const HomePage = () => {
       receiverId: 2,
       msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
       date: new Date(),
-      seen: false,
+      status: "none",
     },
   ];
   ///////////////////////////////////////////////////////////////////////
@@ -469,10 +469,14 @@ export const HomePage = () => {
                   <div className="date-row">
                     <p>{getCompleteDate(message.date)}</p>
                     {message.senderId === user.id ? (
-                      message.seen ? (
+                      message.status === "seen" ? (
                         <i className="fa-solid fa-eye"></i>
-                      ) : (
+                      ) : message.status === "sent" ? (
                         <i className="fa-regular fa-circle-check"></i>
+                      ) : message.status === "none" ? (
+                        <i className="fa-solid fa-paper-plane"></i>
+                      ) : (
+                        <></>
                       )
                     ) : (
                       <></>
