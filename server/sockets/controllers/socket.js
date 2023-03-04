@@ -75,7 +75,41 @@ const onConnectUser = async (io, client, data, connectedUsers) => {
   connectedUsers.connectUser({ databaseId: userId, socketId: client.id });
 };
 
+const onSendSeen = async (io, client, data, connectedUsers) => {
+  const { token, message } = data;
+
+  if (!token) {
+    return;
+  }
+
+  const result = checkJWT(token);
+
+  if (result.status === "error") {
+    return;
+  }
+
+  try {
+    const searchedMsg = await Message.findOne({
+      where: {
+        id: message.id,
+      },
+    });
+
+    searchedMsg.status = "seen";
+    await searchedMsg.save();
+
+    client.emit("send-seen", { msg: "ok", message: searchedMsg });
+    return {
+      msg: "ok",
+    };
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
+
 module.exports = {
   onSendMsg,
   onConnectUser,
+  onSendSeen,
 };

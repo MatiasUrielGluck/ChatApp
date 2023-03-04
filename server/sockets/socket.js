@@ -1,9 +1,17 @@
-const { onSendMsg, onConnectUser } = require("./controllers/socket");
+const {
+  onSendMsg,
+  onConnectUser,
+  onSendSeen,
+} = require("./controllers/socket");
 
 const socket = (io, connectedUsers) => {
   io.on("connection", (client) => {
     client.on("send-msg", async (data) => {
       await onSendMsg(io, client, data, connectedUsers);
+    });
+
+    client.on("send-seen", async (data) => {
+      await onSendSeen(io, client, data, connectedUsers);
     });
 
     client.on("connect-user", async (data) => {

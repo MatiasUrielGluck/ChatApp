@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { onNewMessage } from "../socket/socket";
+import { onNewMessage, onSendSeen } from "../socket/socket";
 
 export const useSocket = () => {
   const [newMessage, setNewMessage] = useState(undefined);
@@ -7,6 +7,9 @@ export const useSocket = () => {
   useEffect(() => {
     onNewMessage((err, data) => {
       setNewMessage(data.newMessage);
+    });
+    onSendSeen((err, data) => {
+      console.log(data.message);
     });
   }, []);
 

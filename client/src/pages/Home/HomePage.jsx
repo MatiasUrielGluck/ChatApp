@@ -34,6 +34,14 @@ export const HomePage = () => {
     newMessageList.push(newMessage);
     setMessageList(newMessageList);
 
+    if (!newMessage) {
+      return;
+    }
+
+    if (newMessage.chatId !== selectedChat.id) {
+      return;
+    }
+
     const newChatMessageList = [];
     for (const msg of chatMessagesList) {
       newChatMessageList.push(msg);
@@ -200,7 +208,6 @@ export const HomePage = () => {
   };
 
   const getMessagesByChatId = (chatId) => {
-    // TODO: This should be a backend request, not a frontend process!!!
     const list = [];
     for (const message of messageList) {
       if (message.chatId === chatId) {

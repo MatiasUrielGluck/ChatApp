@@ -13,6 +13,12 @@ export const onNewMessage = (cb) => {
   });
 };
 
+export const onSendSeen = (cb) => {
+  socket.on("send-seen", (payload) => {
+    return cb(null, payload);
+  });
+};
+
 export const sendMsg = async (message) => {
   const payload = {
     token: localStorage.getItem("token"),
@@ -26,4 +32,12 @@ export const sendMsg = async (message) => {
 
 export const connectUser = () => {
   socket.emit("connect-user", { token: localStorage.getItem("token") });
+};
+
+export const sendSeen = async (message) => {
+  const result = await asyncEmit(socket, "send-seen", {
+    token: localStorage.getItem("token"),
+    message,
+  });
+  return result;
 };
