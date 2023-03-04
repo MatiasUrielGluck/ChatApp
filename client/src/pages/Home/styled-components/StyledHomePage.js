@@ -12,6 +12,19 @@ export const StyledHomePage = styled.div`
     background: #bdc3c7;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
+    @media (width < 768px) {
+      max-width: 100%;
+      min-width: 100%;
+
+      &.closed {
+        display: none;
+      }
+
+      &.open {
+        display: initial;
+      }
+    }
+
     h2 {
       margin-bottom: 12px;
       padding: 12px;
@@ -110,10 +123,45 @@ export const StyledHomePage = styled.div`
     padding: 24px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
+    .go-back-btn {
+      display: none;
+      padding: 8px;
+      background: #d2d6d9;
+      border: 1px solid #bdc3c7;
+    }
+
+    @media (height < 768px) {
+      padding: 12px;
+    }
+
+    @media (width < 768px) {
+      max-width: 100%;
+      min-width: 100%;
+
+      .go-back-btn {
+        display: initial;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+      }
+
+      &.closed {
+        display: none;
+      }
+
+      &.open {
+        display: initial;
+      }
+    }
+
     .chat {
       display: grid;
       height: 88%;
       overflow: auto;
+
+      @media (height < 768px) {
+        height: 69%;
+      }
 
       .msg-container {
         padding: 12px;
@@ -122,6 +170,10 @@ export const StyledHomePage = styled.div`
         width: fit-content;
         height: fit-content;
         margin-right: 0;
+
+        @media (width < 1101px) {
+          max-width: 70%;
+        }
 
         .date-row {
           display: flex;
@@ -141,8 +193,6 @@ export const StyledHomePage = styled.div`
 
         &.sent {
           background: rgba(0, 98, 255, 0.3);
-          /* Make this element to the right of the chat */
-
           justify-self: right;
         }
 

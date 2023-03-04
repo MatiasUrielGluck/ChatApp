@@ -249,6 +249,7 @@ export const HomePage = () => {
 
     setSelectedChat(chat);
     getMessagesByChatId(chat.id);
+    setChatOpen(true);
     setSendMsgInput("");
     if (document.getElementById("sendMsgInput")) {
       document.getElementById("sendMsgInput").focus();
@@ -386,19 +387,21 @@ export const HomePage = () => {
     scrollToBottom();
   }, [selectedChat]);
 
+  const [chatOpen, setChatOpen] = useState(false);
+
   if (!userList.length) {
     return <h1>Loading...</h1>;
   }
 
   return (
     <StyledHomePage>
-      <div className="left-container">
+      <div className={`left-container ${chatOpen ? "closed" : "open"}`}>
         <h2>Chat</h2>
         <div className="search-bar">
           <form onSubmit={onUserSearch}>
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search user"
               value={searchInput}
               onChange={onSearchInputChange}
               onClick={initFilteredUserList}
@@ -473,7 +476,7 @@ export const HomePage = () => {
         </div>
       </div>
 
-      <div className="right-container">
+      <div className={`right-container ${chatOpen ? "open" : "closed"}`}>
         {!selectedChat ? (
           <></>
         ) : (
@@ -484,6 +487,15 @@ export const HomePage = () => {
                 : getUserById(selectedChat.user1Id).username}
             </h1>
             <div className="chat">
+              <button
+                className="go-back-btn"
+                onClick={() => {
+                  setSelectedChat(null);
+                  setChatOpen(!chatOpen);
+                }}
+              >
+                Back to chats
+              </button>
               {chatMessagesList.map((message) => (
                 <div
                   key={message.id}
