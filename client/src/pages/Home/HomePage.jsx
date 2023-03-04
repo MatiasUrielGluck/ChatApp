@@ -144,7 +144,6 @@ export const HomePage = () => {
       !getLastMessageByChatId(chatA.id) ||
       !getLastMessageByChatId(chatB.id)
     ) {
-      console.log("Ando mal...");
       return;
     }
 
