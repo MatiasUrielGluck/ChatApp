@@ -76,7 +76,7 @@ const onConnectUser = async (io, client, data, connectedUsers) => {
 };
 
 const onSendSeen = async (io, client, data, connectedUsers) => {
-  const { token, message } = data;
+  const { token, chat } = data;
 
   if (!token) {
     return;
@@ -88,17 +88,42 @@ const onSendSeen = async (io, client, data, connectedUsers) => {
     return;
   }
 
+  const decodedToken = result.data;
+  const userId = decodedToken.id;
+
   try {
-    const searchedMsg = await Message.findOne({
+    const messageList = await Message.findAll({
       where: {
-        id: message.id,
+        chatId: chat.id,
+        receiverId: userId,
       },
     });
 
-    searchedMsg.status = "seen";
-    await searchedMsg.save();
+    for (const msg of messageList) {
+      if (msg.status !== "seen") {
+        msg.status = "seen";
+        await msg.save();
+      }
+    }
 
-    client.emit("send-seen", { msg: "ok", message: searchedMsg });
+    const senderSocket = connectedUsers.getUserByDatabaseId(
+      chat.user1Id === userId ? chat.user1Id : chat.user2Id
+    ).socketId;
+
+    const receiverSocket = connectedUsers.getUserByDatabaseId(
+      chat.user1Id === userId ? chat.user2Id : chat.user1Id
+    ).socketId;
+
+    io.to(senderSocket).emit("send-seen", {
+      msg: "ok",
+      chat,
+    });
+
+    io.to(receiverSocket).emit("send-seen", {
+      msg: "ok",
+      chat,
+    });
+
     return {
       msg: "ok",
     };

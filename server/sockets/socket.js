@@ -11,6 +11,7 @@ const socket = (io, connectedUsers) => {
     });
 
     client.on("send-seen", async (data) => {
+      console.log("Emited send seen from client");
       await onSendSeen(io, client, data, connectedUsers);
     });
 

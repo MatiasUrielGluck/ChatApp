@@ -34,10 +34,10 @@ export const connectUser = () => {
   socket.emit("connect-user", { token: localStorage.getItem("token") });
 };
 
-export const sendSeen = async (message) => {
+export const sendSeen = async (chat) => {
   const result = await asyncEmit(socket, "send-seen", {
     token: localStorage.getItem("token"),
-    message,
+    chat
   });
   return result;
 };

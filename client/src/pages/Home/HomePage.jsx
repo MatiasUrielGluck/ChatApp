@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { StyledHomePage } from "./styled-components";
 import "../../socket/socket";
-import { connectUser, sendMsg } from "../../socket/socket";
+import { connectUser, sendMsg, sendSeen } from "../../socket/socket";
 import usersApi from "../../api/usersApi";
 import chatsApi from "../../api/chatsApi";
 import messagesApi from "../../api/messagesApi";
@@ -11,7 +11,7 @@ import { useSocket } from "../../hooks/useSocket";
 export const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
 
-  const { newMessage } = useSocket();
+  const { newMessage, msgWhereSeen } = useSocket();
 
   useEffect(() => {
     connectUser();
@@ -26,7 +26,7 @@ export const HomePage = () => {
 
   const [messageList, setMessageList] = useState([]);
 
-  const addMessageFromServer = () => {
+  const addMessageFromServer = async () => {
     const newMessageList = [];
     for (const msg of messageList) {
       newMessageList.push(msg);
@@ -39,6 +39,7 @@ export const HomePage = () => {
     }
 
     if (newMessage.chatId !== selectedChat.id) {
+      // TODO: Create notification
       return;
     }
 
@@ -48,11 +49,57 @@ export const HomePage = () => {
     }
     newChatMessageList.push(newMessage);
     setChatMessagesList(newChatMessageList);
+
+    await sendSeen(selectedChat);
   };
 
   useEffect(() => {
     addMessageFromServer();
   }, [newMessage]);
+
+  useEffect(() => {
+    console.log(msgWhereSeen);
+  }, [msgWhereSeen]);
+
+  const updateMessageLists = () => {
+    // TODO:
+    if (!msgWhereSeen.chat) {
+      return;
+    }
+
+    // console.log(msgWhereSeen);
+    const newGlobalList = [];
+    for (const msg of messageList) {
+      if (msg.chatId === msgWhereSeen.chat.id) {
+        if (msg.senderId === user.id) {
+          msg.status = "seen";
+        }
+      }
+      newGlobalList.push(msg);
+    }
+    setMessageList(newGlobalList);
+
+    if (!selectedChat) {
+      return;
+    }
+
+    const newSelectedChatMessageList = [];
+    for (const msg of chatMessagesList) {
+      if (msg.chatId === msgWhereSeen.chat.id) {
+        if (msg.senderId === user.id) {
+          msg.status = "seen";
+        }
+      }
+      newSelectedChatMessageList.push(msg);
+    }
+
+    setChatMessagesList(newSelectedChatMessageList);
+  };
+
+  useEffect(() => {
+    // TODO: refrescar messageList y chatMessageList
+    updateMessageLists();
+  }, [msgWhereSeen]);
 
   const getUserList = async () => {
     const result = await usersApi().get("/", {
