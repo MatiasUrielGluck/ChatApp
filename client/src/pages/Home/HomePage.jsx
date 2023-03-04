@@ -83,6 +83,10 @@ export const HomePage = () => {
   }, []);
 
   const compareChatFnByDate = (chatA, chatB) => {
+    if (!chatA.date || !chatB.date) {
+      return;
+    }
+
     if (
       new Date(getLastMessageByChatId(chatA.id).date).getTime() >
       new Date(getLastMessageByChatId(chatB.id).date).getTime()
@@ -190,128 +194,6 @@ export const HomePage = () => {
       document.getElementById("sendMsgInput").focus();
     }
   };
-
-  // TEMP DATA!!! TODO: REPLACE THIS DATA WITH REAL DATA FROM DATABASE
-
-  /*
-  const chatList = [
-    {
-      id: 1,
-      user1Id: 2,
-      user2Id: 1,
-    },
-    {
-      id: 2,
-      user1Id: 1,
-      user2Id: 3,
-    },
-  ];
-  */
-
-  /*
-  const messageList = [
-    {
-      id: 1,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "Hola debi",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 2,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "cómo estás?",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 3,
-      chatId: 2,
-      senderId: 3,
-      receiverId: 1,
-      msg: "Hola mati",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 4,
-      chatId: 1,
-      senderId: 2,
-      receiverId: 1,
-      msg: "Hola mati, todo bien! Vos cómo estás?",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 5,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 6,
-      chatId: 2,
-      senderId: 1,
-      receiverId: 3,
-      msg: "Hola Mario!",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 7,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 8,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 9,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
-      date: new Date(),
-      status: "seen",
-    },
-    {
-      id: 10,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
-      date: new Date(),
-      status: "sent",
-    },
-    {
-      id: 11,
-      chatId: 1,
-      senderId: 1,
-      receiverId: 2,
-      msg: "Me alegro, todo bien por suerteeeeeeeeeeeeee! Estoy entusiasmado por mejorar esta app y seguir aprendiendo! Este es un mensaje largo para comprobar los estilos de cada mensaje jaja!",
-      date: new Date(),
-      status: "none",
-    },
-  ];
-  ///////////////////////////////////////////////////////////////////////
-  */
 
   const getUserById = (id) => {
     return userList.filter((user) => user.id === id)[0];
