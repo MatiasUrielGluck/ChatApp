@@ -58,6 +58,7 @@ export const HomePage = () => {
     setChatMessagesList(newChatMessageList);
 
     await sendSeen(selectedChat);
+    await getMessageList();
   };
 
   useEffect(() => {
@@ -255,6 +256,7 @@ export const HomePage = () => {
     }
 
     await sendSeen(chat);
+    await getMessageList();
   };
 
   const getUserById = (id) => {
