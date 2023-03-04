@@ -57,10 +57,6 @@ export const HomePage = () => {
     addMessageFromServer();
   }, [newMessage]);
 
-  useEffect(() => {
-    console.log(msgWhereSeen);
-  }, [msgWhereSeen]);
-
   const updateMessageLists = () => {
     // TODO:
     if (!msgWhereSeen.chat) {
@@ -233,7 +229,7 @@ export const HomePage = () => {
 
   const [selectedChat, setSelectedChat] = useState(null);
 
-  const onSelectChat = (chat) => {
+  const onSelectChat = async (chat) => {
     setChatList(
       chatList.filter(
         (chat) =>
@@ -248,6 +244,8 @@ export const HomePage = () => {
     if (document.getElementById("sendMsgInput")) {
       document.getElementById("sendMsgInput").focus();
     }
+
+    await sendSeen(chat);
   };
 
   const getUserById = (id) => {
