@@ -37,16 +37,6 @@ export const HomePage = () => {
       }).length
     ) {
       await getChatList();
-      // const newChatList = [];
-      // for (const chat of chatList) {
-      //   newChatList.push(chat);
-      // }
-      // newChatList.push({
-      //   id: newMessage.chatId,
-      //   user1Id: ,
-      //   user2Id:
-      // })
-      // setChatList(newChatList);
     }
 
     const newMessageList = [];
@@ -149,7 +139,11 @@ export const HomePage = () => {
   }, []);
 
   const compareChatFnByDate = (chatA, chatB) => {
-    if (!chatA.date || !chatB.date) {
+    if (
+      !getLastMessageByChatId(chatA.id) ||
+      !getLastMessageByChatId(chatB.id)
+    ) {
+      console.log("Ando mal...");
       return;
     }
 
