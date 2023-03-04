@@ -27,16 +27,34 @@ export const HomePage = () => {
   const [messageList, setMessageList] = useState([]);
 
   const addMessageFromServer = async () => {
+    if (!newMessage) {
+      return;
+    }
+
+    if (
+      !chatList.filter((chat) => {
+        return chat.id === newMessage.chatId;
+      }).length
+    ) {
+      await getChatList();
+      // const newChatList = [];
+      // for (const chat of chatList) {
+      //   newChatList.push(chat);
+      // }
+      // newChatList.push({
+      //   id: newMessage.chatId,
+      //   user1Id: ,
+      //   user2Id:
+      // })
+      // setChatList(newChatList);
+    }
+
     const newMessageList = [];
     for (const msg of messageList) {
       newMessageList.push(msg);
     }
     newMessageList.push(newMessage);
     setMessageList(newMessageList);
-
-    if (!newMessage) {
-      return;
-    }
 
     if (newMessage.chatId !== selectedChat.id) {
       return;
