@@ -94,6 +94,10 @@ export const StyledHomePage = styled.div`
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+
+          span.notification {
+            font-weight: bold;
+          }
         }
       }
     }

@@ -39,7 +39,6 @@ export const HomePage = () => {
     }
 
     if (newMessage.chatId !== selectedChat.id) {
-      // TODO: Create notification
       return;
     }
 
@@ -58,7 +57,6 @@ export const HomePage = () => {
   }, [newMessage]);
 
   const updateMessageLists = () => {
-    // TODO:
     if (!msgWhereSeen.chat) {
       return;
     }
@@ -93,7 +91,6 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
-    // TODO: refrescar messageList y chatMessageList
     updateMessageLists();
   }, [msgWhereSeen]);
 
@@ -385,7 +382,6 @@ export const HomePage = () => {
       <div className="left-container">
         <h2>Chat</h2>
         <div className="search-bar">
-          {/* TODO: Search bar to search other users and chat with them */}
           <form onSubmit={onUserSearch}>
             <input
               type="text"
@@ -411,7 +407,6 @@ export const HomePage = () => {
           </div>
         </div>
         <div className="chat-list">
-          {/* TODO: List of chats the user has interacted with */}
           {chatList
             .sort((chatA, chatB) => compareChatFnByDate(chatA, chatB))
             .map((chat) => {
@@ -441,9 +436,22 @@ export const HomePage = () => {
                       </p>
                     </div>
                     <p className="chat-item__last-msg">
-                      {getLastMessageByChatId(chat.id)
-                        ? getLastMessageByChatId(chat.id).msg
-                        : "-"}
+                      {getLastMessageByChatId(chat.id) ? (
+                        <span
+                          className={`${
+                            getLastMessageByChatId(chat.id).senderId === user.id
+                              ? ""
+                              : getLastMessageByChatId(chat.id).status !==
+                                "seen"
+                              ? "notification"
+                              : ""
+                          }`}
+                        >
+                          {getLastMessageByChatId(chat.id).msg}
+                        </span>
+                      ) : (
+                        "-"
+                      )}
                     </p>
                   </div>
                 );
@@ -453,7 +461,6 @@ export const HomePage = () => {
       </div>
 
       <div className="right-container">
-        {/* TODO: Chat, with history msgs and at the bottom the textbox to send a new message. */}
         {!selectedChat ? (
           <></>
         ) : (
@@ -463,7 +470,6 @@ export const HomePage = () => {
                 ? getUserById(selectedChat.user2Id).username
                 : getUserById(selectedChat.user1Id).username}
             </h1>
-            {/* TODO: CHAT! */}
             <div className="chat">
               {chatMessagesList.map((message) => (
                 <div
